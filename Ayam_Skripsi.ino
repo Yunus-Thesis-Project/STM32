@@ -32,6 +32,7 @@ float yawSementara = 90;
 float endSementara = 0;
 float pitchSementara = 30;
 float frontSementara = 90;
+float PIDSementara = 0;
 
 char incomingByte = 0;
 
@@ -152,6 +153,8 @@ int pick_place(float locked_yaw = 90){
     counter = 0;
     millis_state = 1;
     locked = false;
+    Serial1.println("Wait a second ...");
+    delay(2000);
     return 0;
   }
 
@@ -226,7 +229,7 @@ void setup()
 
 void loop()
 {
-  if(Serial1.available()>0){
+  if(Serial1.available()>0 && !locked){
     char inChar = (char)Serial1.read();
     dataIn += inChar;
     if (inChar == '\n'){
@@ -248,6 +251,10 @@ void loop()
     Serial1.print(sData[2]);
     Serial1.print(" front : ");
     Serial1.print(sData[3]);
+    Serial1.print(" PID : ");
+    Serial1.print(sData[4]);
+    Serial1.print(" Lock : ");
+    Serial1.print(sData[5]);
     Serial1.println("");
     
 
@@ -255,27 +262,31 @@ void loop()
     endSementara = sData[1];
     pitchSementara = sData[2];
     frontSementara = sData[3];
+    PIDSementara = sData[4];
     locked = sData[5];
     
-    //if(!locked)
-//    sementara = sData[4];
-//    Serial1.print(sData[4]);
-//    dPID += sData[4];
-//    if(dPID<0) dPID = 0;
-//    else if(dPID>180) dPID = 180;
-//    move_servo(yawPin, dPID);
-    
+    if(!locked){
+      dPID += PIDSementara;
+      if(dPID<0) dPID = 0;
+      else if(dPID>180) dPID = 180;
+      move_multiple_servo(dPID, 0, 30, 90);
+    }
+      
     parsing = false;
     dataIn = "";
   }
 
   if(locked){
-    Serial1.println("Jalan");
-    pick_place(90);
-  }else if (detected){
-    move_multiple_servo(dPID, 0, 30, 90);
-  }else{
-    move_multiple_servo(yawSementara, endSementara, pitchSementara, frontSementara);
+    Serial1.println("Target Locked");
+    pick_place(dPID);
   }
+//  else if (detected){
+//    Serial1.println("Tracking");
+//    move_multiple_servo(dPID, 0, 30, 90);
+//    detected = 0;
+//  }
+//  else{
+//    move_multiple_servo(90, 0, 30, 90);
+//  }
   
 }
