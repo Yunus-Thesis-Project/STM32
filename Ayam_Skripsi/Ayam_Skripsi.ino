@@ -40,6 +40,7 @@ String dataIn;
 String dt[10];
 
 boolean parsing;
+boolean finish_place = false;
 
 unsigned long int servo_delay;
 
@@ -153,8 +154,9 @@ int pick_place(float locked_yaw = 90){
     counter = 0;
     millis_state = 1;
     locked = false;
+    finish_place = true;
     Serial1.println("Wait a second ...");
-    delay(2000);
+    delay(5000);
     return 0;
   }
 
@@ -264,6 +266,12 @@ void loop()
     frontSementara = sData[3];
     PIDSementara = sData[4];
     locked = sData[5];
+
+    if(finish_place){
+      PIDSementara = 0;
+      dPID = 90;
+      finish_place = false;
+    }
     
     if(!locked){
       dPID += PIDSementara;
@@ -286,7 +294,7 @@ void loop()
 //    detected = 0;
 //  }
 //  else{
-//    move_multiple_servo(90, 0, 30, 90);
+//    move_multiple_servo(90, 30, 30, 90);
 //  }
   
 }
