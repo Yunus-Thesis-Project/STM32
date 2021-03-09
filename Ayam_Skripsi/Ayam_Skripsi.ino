@@ -21,6 +21,8 @@ int yawPin = PA0;
 int endPin = PA1;
 int pitchPin = PB4;
 int frontPin = PB5;
+int basePin = PB6;
+int konveyorPin = PB7;
 int pulseTime;
 int dtt;
 int sementara = 90;
@@ -221,6 +223,8 @@ void setup()
   pinMode(endPin,OUTPUT);
   pinMode(pitchPin,OUTPUT);
   pinMode(frontPin,OUTPUT);
+  pinMode(basePin, OUTPUT);
+  pinMode(konveyorPin, OUTPUT);
   
   Serial1.println("Init Servo");
 
@@ -293,8 +297,11 @@ void loop()
 //    move_multiple_servo(dPID, 0, 30, 90);
 //    detected = 0;
 //  }
-//  else{
-//    move_multiple_servo(90, 30, 30, 90);
-//  }
+  else{
+    digitalWrite(konveyorPin, HIGH);
+    delay(1000);
+    digitalWrite(konveyorPin, LOW);
+    delay(1000);
+  }
   
 }
