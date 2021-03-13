@@ -6,7 +6,7 @@
  * pitch = 0-130 (bawah-atas)
  * front = 90 - 180(tengah - depan)
  * *yaw,end,pitch,front, pid, locked, base, kelas# 
- * *90,20,30,90,0,0,0,1#   --> Posisi Awal
+ * *90,20,30,85,0,0,0,1#   --> Posisi Awal
  * 
  */
 
@@ -33,7 +33,7 @@ int millis_state = 1;
 float yawSementara = 90;
 float endSementara = 20;
 float pitchSementara = 30;
-float frontSementara = 90;
+float frontSementara = 85;
 float baseSementara = 0;
 float PIDSementara = 0;
 float kelasSementara = 1;
@@ -90,7 +90,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 0){
     Serial1.println("Servo di Posisi Awal");
-    move_multiple_servo(locked_yaw, 20, 65, 90, 0);
+    move_multiple_servo(locked_yaw, 20, 65, 85, 0);
   }else if(counter == 0){
     counter++;
     millis_state = 1;
@@ -99,7 +99,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
 
   if(millis() - servo_delay <=1000 && counter == 1){
     Serial1.println("Servo Membuka end");
-    move_multiple_servo(locked_yaw, 50, 65, 90, 0);
+    move_multiple_servo(locked_yaw, 50, 65, 85, 0);
   }else if(counter == 1){
     counter++;
     millis_state = 1;
@@ -126,16 +126,16 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 4){
     Serial1.println("Servo Kembali");
-    move_multiple_servo(locked_yaw, 5, 65, 90, 0);
+    move_multiple_servo(locked_yaw, 5, 65, 85, 0);
   }else if(counter == 4){
     counter++;
     millis_state = 1;
     return 0;
   }
 
-  if(millis() - servo_delay <=2000 && counter == 5){
+  if(millis() - servo_delay <=1500 && counter == 5){
     Serial1.println("Servo Berputar 180 derajat");
-    move_multiple_servo(locked_yaw, 5, 65, 90, 90); 
+    move_multiple_servo(locked_yaw, 5, 65, 85, 90); 
   }else  if(counter == 5){
     counter++;
     millis_state = 1;
@@ -144,7 +144,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 6){
     Serial1.println("Servo ke Lokasi Kelas");
-    move_multiple_servo(sudutKelas, 5, 65, 90, 90); 
+    move_multiple_servo(sudutKelas, 5, 65, 85, 90); 
   }else  if(counter == 6){
     counter++;
     millis_state = 1;
@@ -171,7 +171,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
 
   if(millis() - servo_delay <=1000 && counter == 9){
     Serial1.println("Servo Kembali");
-    move_multiple_servo(sudutKelas, 60, 65, 90, 90);
+    move_multiple_servo(sudutKelas, 60, 65, 85, 90);
   }else  if(counter == 9){
     counter++;
     millis_state = 1;
@@ -180,7 +180,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=3000 && counter == 10){
     Serial1.println("Servo kembali ke posisi");
-    move_multiple_servo(90, 20, 30, 90, 0);
+    move_multiple_servo(90, 20, 30, 85, 0);
   }else if(counter == 10){
     counter = 0;
     millis_state = 1;
@@ -316,7 +316,7 @@ void loop()
       dPID += PIDSementara;
       if(dPID<0) dPID = 0;
       else if(dPID>180) dPID = 180;
-      move_multiple_servo(dPID, 0, 30, 90, 0);
+      move_multiple_servo(dPID, 0, 30, 85, 0);
     }
       
     parsing = false;
@@ -332,7 +332,7 @@ void loop()
 //    move_multiple_servo(dPID, 0, 30, 90);
 //    detected = 0;
 //  }
-  else{
-    move_multiple_servo(yawSementara, endSementara, pitchSementara, frontSementara, baseSementara);
-  }
+//  else{
+//    move_multiple_servo(yawSementara, endSementara, pitchSementara, frontSementara, baseSementara);
+//  }
 }
