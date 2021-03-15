@@ -27,7 +27,6 @@ int pulseTime;
 int dtt;
 int sementara = 90;
 int counter = 0;
-int locked = 0;
 int millis_state = 1;
 int konveyorCount = 0;
 
@@ -40,6 +39,7 @@ float PIDSementara = 0;
 float kelasSementara = 1;
 float sudutKelas = 30;
 float konveyorSementara = 1;
+float locked = 0;
 
 char incomingByte = 0;
 
@@ -189,6 +189,8 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
     millis_state = 1;
     locked = 0;
     finish_place = true;
+    parsing = false;
+    dataIn = "";
     Serial1.println("Wait a second ...");
     delay(2000);
     return 0;
@@ -250,7 +252,7 @@ void move_servo(int pin, int degree){
 
 void setup()
 {
-  Serial1.begin(9600);
+  Serial1.begin(57600);
   pinMode(yawPin,OUTPUT);
   pinMode(endPin,OUTPUT);
   pinMode(pitchPin,OUTPUT);
@@ -267,7 +269,7 @@ void setup()
 
 void loop()
 {
-  if(Serial1.available()>0 && !locked){
+  if(Serial1.available()>0){
     char inChar = (char)Serial1.read();
     dataIn += inChar;
     if (inChar == '\n'){
@@ -275,7 +277,7 @@ void loop()
     }
   }
 
-  if(parsing){
+  if(parsing && !locked){
     dtt = parsingData(dataIn);
     float sData[dtt];
     for(int x = 0; x<dtt; ++x){
