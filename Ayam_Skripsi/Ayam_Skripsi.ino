@@ -5,8 +5,8 @@
  * end effector = 0-40 (tutup-buka)
  * pitch = 0-130 (bawah-atas)
  * front = 90 - 180(tengah - depan)
- * *yaw,end,pitch,front, pid, locked, base, kelas# 
- * *90,20,30,85,0,0,0,1#   --> Posisi Awal
+ * *yaw,end,pitch,front, pid, locked, base, kelas, konveyor# 
+ * *90,20,30,85,0,0,0,1,1#   --> Posisi Awal
  * 
  */
 
@@ -29,6 +29,7 @@ int sementara = 90;
 int counter = 0;
 int locked = 0;
 int millis_state = 1;
+int konveyorCount = 0;
 
 float yawSementara = 90;
 float endSementara = 20;
@@ -38,6 +39,7 @@ float baseSementara = 0;
 float PIDSementara = 0;
 float kelasSementara = 1;
 float sudutKelas = 30;
+float konveyorSementara = 1;
 
 char incomingByte = 0;
 
@@ -46,6 +48,7 @@ String dt[10];
 
 boolean parsing;
 boolean finish_place = false;
+boolean konveyorState = false;
 
 unsigned long int servo_delay;
 
@@ -184,7 +187,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   }else if(counter == 10){
     counter = 0;
     millis_state = 1;
-    locked = false;
+    locked = 0;
     finish_place = true;
     Serial1.println("Wait a second ...");
     delay(2000);
@@ -294,6 +297,8 @@ void loop()
     Serial1.print(sData[6]);
     Serial1.print(" Kelas : ");
     Serial1.print(sData[7]);
+    Serial1.print(" Konveyor : ");
+    Serial1.print(sData[8]);
     Serial1.println("");
     
 
@@ -305,14 +310,38 @@ void loop()
     locked = sData[5];
     baseSementara = sData[6];
     kelasSementara = sData[7];
+    konveyorSementara = sData[8];
 
+    if(konveyorState){
+      if(konveyorSementara = 1){
+        konveyorCount++;
+      }else{
+        konveyorCount = 0;
+      }
+
+      if(konveyorCount>50){
+        konveyorState = false;
+        konveyorCount = 0;
+        dPID = 90;
+      }
+    }else{
+      if(konveyorSementara == 1){
+        digitalWrite(konveyorPin, HIGH);
+      }else{
+        digitalWrite(konveyorPin, LOW);
+        konveyorState = true;
+      }  
+    }
+    
     if(finish_place){
       PIDSementara = 0;
       dPID = 90;
       finish_place = false;
     }
     
-    if(!locked){
+    if(locked == 1){
+      digitalWrite(konveyorPin, LOW);
+    }else{
       dPID += PIDSementara;
       if(dPID<0) dPID = 0;
       else if(dPID>180) dPID = 180;
@@ -323,7 +352,7 @@ void loop()
     dataIn = "";
   }
 
-  if(locked){
+  if(locked == 1){
     Serial1.println("Target Locked");
     pick_place(dPID, kelasSementara);
   }
