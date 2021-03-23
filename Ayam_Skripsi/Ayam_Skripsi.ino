@@ -147,7 +147,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 7){
     Serial1.println("Servo Maju");
-    move_multiple_servo(sudutKelas, 5, 65, 180, 180);
+    move_multiple_servo(sudutKelas, 5, 65, 165, 180);
   }else  if(counter == 7){
     counter++;
     millis_state = 1;
@@ -156,7 +156,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 8){
     Serial1.println("Servo Melepaskan");
-    move_multiple_servo(sudutKelas, 60, 65, 180, 180);
+    move_multiple_servo(sudutKelas, 60, 65, 165, 180);
   }else  if(counter == 8){
     counter++;
     millis_state = 1;
@@ -264,7 +264,14 @@ void loop()
     char inChar = (char)Serial1.read();
     dataIn += inChar;
     if (inChar == '\n'){
-      parsing = true;
+      Serial1.println(dataIn);
+      if(dataIn.length()<10){
+        parsing = false; 
+        dataIn = ""; 
+      }else{
+        parsing = true;
+      }
+      
     }
   }
 
@@ -333,6 +340,7 @@ void loop()
     }
     
     if(locked == 1){
+      Serial1.println("Target Locked");
       digitalWrite(konveyorPin, LOW);
     }else{
       dPID += PIDSementara;
@@ -346,7 +354,6 @@ void loop()
   }
 
   if(locked == 1){
-    Serial1.println("Target Locked");
     pick_place(dPID, kelasSementara);
   }
 //  else if (detected){
