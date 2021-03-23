@@ -61,16 +61,7 @@ void move_multiple_servo(float yaw, float endf, float pitch, float front, float 
 }
 
 int pick_place(float locked_yaw = 90, float kelas = 1){
-  /*
-   * *90,30,65,90#   --> Posisi Awal
-   * *90,30,65,160# --> End terbuka dan front maju
-   * *90,0,65,160#  --> End tertutup (pick)
-   * *90,0,65,90#   --> Pitch naik dan front mundur
-   * *180,0,65,90#  --> Ganti YAW ke arah lokasi box
-   * *180,0,65,160# --> front maju
-   * *180,30,65,160# --> end terbuka (place)
-   */
-
+  
   if(kelas == 1){
     sudutKelas = 30;
   }else if(kelas == 2){
@@ -93,7 +84,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 0){
     Serial1.println("Servo di Posisi Awal");
-    move_multiple_servo(locked_yaw, 20, 65, 85, 0);
+    move_multiple_servo(locked_yaw, 20, 55, 85, 0);
   }else if(counter == 0){
     counter++;
     millis_state = 1;
@@ -102,7 +93,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
 
   if(millis() - servo_delay <=1000 && counter == 1){
     Serial1.println("Servo Membuka end");
-    move_multiple_servo(locked_yaw, 50, 65, 85, 0);
+    move_multiple_servo(locked_yaw, 50, 55, 85, 0);
   }else if(counter == 1){
     counter++;
     millis_state = 1;
@@ -111,7 +102,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 2){
     Serial1.println("Servo maju");
-    move_multiple_servo(locked_yaw, 50, 65, 160, 0);
+    move_multiple_servo(locked_yaw, 50, 55, 160, 0);
   }else if(counter == 2){
     counter++;
     millis_state = 1;
@@ -120,7 +111,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 3){
     Serial1.println("Servo Mengambil");
-    move_multiple_servo(locked_yaw, 5, 65, 160, 0);
+    move_multiple_servo(locked_yaw, 5, 55, 160, 0);
   }else if(counter == 3){
     counter++;
     millis_state = 1;
@@ -138,7 +129,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
 
   if(millis() - servo_delay <=1500 && counter == 5){
     Serial1.println("Servo Berputar 180 derajat");
-    move_multiple_servo(locked_yaw, 5, 65, 85, 90); 
+    move_multiple_servo(locked_yaw, 5, 65, 85, 180); 
   }else  if(counter == 5){
     counter++;
     millis_state = 1;
@@ -147,7 +138,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 6){
     Serial1.println("Servo ke Lokasi Kelas");
-    move_multiple_servo(sudutKelas, 5, 65, 85, 90); 
+    move_multiple_servo(sudutKelas, 5, 65, 85, 180); 
   }else  if(counter == 6){
     counter++;
     millis_state = 1;
@@ -156,7 +147,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 7){
     Serial1.println("Servo Maju");
-    move_multiple_servo(sudutKelas, 5, 65, 180, 90);
+    move_multiple_servo(sudutKelas, 5, 65, 180, 180);
   }else  if(counter == 7){
     counter++;
     millis_state = 1;
@@ -165,7 +156,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
   
   if(millis() - servo_delay <=1000 && counter == 8){
     Serial1.println("Servo Melepaskan");
-    move_multiple_servo(sudutKelas, 60, 65, 180, 90);
+    move_multiple_servo(sudutKelas, 60, 65, 180, 180);
   }else  if(counter == 8){
     counter++;
     millis_state = 1;
@@ -174,7 +165,7 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
 
   if(millis() - servo_delay <=1000 && counter == 9){
     Serial1.println("Servo Kembali");
-    move_multiple_servo(sudutKelas, 60, 65, 85, 90);
+    move_multiple_servo(sudutKelas, 60, 65, 85, 180);
   }else  if(counter == 9){
     counter++;
     millis_state = 1;
@@ -277,30 +268,30 @@ void loop()
     }
   }
 
-  if(parsing && !locked){
+  if(parsing && locked == 0){
     dtt = parsingData(dataIn);
     float sData[dtt];
     for(int x = 0; x<dtt; ++x){
       sData[x] = dt[x].toFloat();
     }
     Serial1.print("yaw : ");
-    Serial1.print(sData[0]);
+    Serial1.print(sData[0],1);
     Serial1.print(" end : ");
-    Serial1.print(sData[1]);
+    Serial1.print(sData[1],1);
     Serial1.print(" pitch : ");
-    Serial1.print(sData[2]);
+    Serial1.print(sData[2],1);
     Serial1.print(" front : ");
-    Serial1.print(sData[3]);
+    Serial1.print(sData[3],1);
     Serial1.print(" PID : ");
-    Serial1.print(sData[4]);
+    Serial1.print(sData[4],1);
     Serial1.print(" Lock : ");
-    Serial1.print(sData[5]);
+    Serial1.print(sData[5],1);
     Serial1.print(" Base : ");
-    Serial1.print(sData[6]);
+    Serial1.print(sData[6],1);
     Serial1.print(" Kelas : ");
-    Serial1.print(sData[7]);
+    Serial1.print(sData[7],1);
     Serial1.print(" Konveyor : ");
-    Serial1.print(sData[8]);
+    Serial1.print(sData[8],1);
     Serial1.println("");
     
 
@@ -315,7 +306,7 @@ void loop()
     konveyorSementara = sData[8];
 
     if(konveyorState){
-      if(konveyorSementara = 1){
+      if(konveyorSementara == 1){
         konveyorCount++;
       }else{
         konveyorCount = 0;
