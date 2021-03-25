@@ -343,12 +343,12 @@ void loop()
       Serial1.println("Target Locked");
       digitalWrite(konveyorPin, LOW);
     }
-//    else{
-//      dPID += PIDSementara;
-//      if(dPID<0) dPID = 0;
-//      else if(dPID>180) dPID = 180;
-//      move_multiple_servo(dPID, 0, 30, 85, 0);
-//    }
+    else{
+      dPID += PIDSementara;
+      if(dPID<0) dPID = 0;
+      else if(dPID>180) dPID = 180;
+      move_multiple_servo(dPID, 0, 30, 85, 0);
+    }
       
     parsing = false;
     dataIn = "";
@@ -362,11 +362,7 @@ void loop()
 //    move_multiple_servo(dPID, 0, 30, 90);
 //    detected = 0;
 //  }
-  else{
-    dPID += PIDSementara;
-    if(dPID<0) dPID = 0;
-    else if(dPID>180) dPID = 180;
-    move_multiple_servo(dPID, 0, 30, 85, 0);
+//  else{
 //    move_multiple_servo(yawSementara, endSementara, pitchSementara, frontSementara, baseSementara);
-  }
+//  }
 }
