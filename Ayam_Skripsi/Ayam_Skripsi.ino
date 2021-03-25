@@ -71,10 +71,10 @@ int pick_place(float locked_yaw = 90, float kelas = 1){
     sudutKelas = 90;
   }
   else if(kelas == 4){
-    sudutKelas = 120;
+    sudutKelas = 135;
   }
   else{
-    sudutKelas = 150;
+    sudutKelas = 170;
   }
    
   if(millis_state){
@@ -342,12 +342,13 @@ void loop()
     if(locked == 1){
       Serial1.println("Target Locked");
       digitalWrite(konveyorPin, LOW);
-    }else{
-      dPID += PIDSementara;
-      if(dPID<0) dPID = 0;
-      else if(dPID>180) dPID = 180;
-      move_multiple_servo(dPID, 0, 30, 85, 0);
     }
+//    else{
+//      dPID += PIDSementara;
+//      if(dPID<0) dPID = 0;
+//      else if(dPID>180) dPID = 180;
+//      move_multiple_servo(dPID, 0, 30, 85, 0);
+//    }
       
     parsing = false;
     dataIn = "";
@@ -361,7 +362,11 @@ void loop()
 //    move_multiple_servo(dPID, 0, 30, 90);
 //    detected = 0;
 //  }
-//  else{
+  else{
+    dPID += PIDSementara;
+    if(dPID<0) dPID = 0;
+    else if(dPID>180) dPID = 180;
+    move_multiple_servo(dPID, 0, 30, 85, 0);
 //    move_multiple_servo(yawSementara, endSementara, pitchSementara, frontSementara, baseSementara);
-//  }
+  }
 }
