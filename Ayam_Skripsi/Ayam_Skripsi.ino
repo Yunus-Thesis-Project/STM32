@@ -30,11 +30,11 @@ int counter = 0;
 int millis_state = 1;
 int konveyorCount = 0;
 
-float yawSementara = 90;
+float yawSementara = 95;
 float endSementara = 20;
 float pitchSementara = 30;
 float frontSementara = 85;
-float baseSementara = 0;
+float baseSementara = 5;
 float PIDSementara = 0;
 float kelasSementara = 1;
 float sudutKelas = 30;
@@ -347,7 +347,7 @@ void loop()
       dPID += PIDSementara;
       if(dPID<0) dPID = 0;
       else if(dPID>180) dPID = 180;
-      move_multiple_servo(dPID, 0, 30, 85, 0);
+      move_multiple_servo(dPID, 20, 30, 85, 5);
     }
       
     parsing = false;
